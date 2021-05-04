@@ -1,0 +1,66 @@
+{{ if form }}
+	{{ form:create in="{ form:handle }" class="m-form" }}
+
+		{{ if success }}
+
+			{{ success|wrap:strong }}
+
+		{{ else }}
+
+			<div class="m-form__fields">
+
+				{{ fields }}
+					<div class="m-input__container{{ if width }} m-input__container--{{ width }}{{ /if }}">
+						
+						{{ HTML }}
+						{{ if type == 'html' }}
+						
+							{{ field:html }}
+						
+						{{ FIELDS }}
+						{{ else }}
+							
+							{{ if type == 'checkboxes' || type == 'radio' }}
+								<fieldset>
+									{{ display|wrap:legend.m-input__label }}
+							{{ else }}
+								<label class="m-input__label" for="{{ handle }}">{{ display }}</label>
+							{{ /if }}
+							
+							{{ instructions|markdown|wrap:div.m-input__instructions }}
+							
+							{{ field }}
+
+							{{ if type == 'checkboxes' ||  type == 'radio' }}
+								</fieldset>
+							{{ /if }}
+
+							{{ ERROR  }}
+							{{ if error }}
+								<p class="m-input__error">{{ error }}</p>
+							{{ /if }}
+							
+						{{ /if }}
+						
+					</div>
+
+					{{ HONEYPOT  }}
+					{{ if index == 1 }}
+						<div class="m-input__container" data-hp>
+							<label class="m-input__label" for="{{ honeypot }}" data-hp>{{ honeypot|ucfirst }}</label>
+							<input class="m-input" id="{{ honeypot }}" type="text" name="{{ honeypot }}" data-hp>
+						</div>
+					{{ /if }}
+
+				{{ /fields }}
+
+				<div class="m-button__container">
+					<button class="m-button">Senden</button>
+				</div>
+			
+			</div>
+
+		{{ /if }}
+
+	{{ /form:create }}
+{{ /if }}
