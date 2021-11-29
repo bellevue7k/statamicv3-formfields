@@ -1,66 +1,60 @@
-{{ if form }}
-	{{ form:create in="{ form:handle }" class="m-form" }}
+{{ form:create in="{# HANDLE #}" class="m-form" id="form-{ index }" redirect="{ current_uri }#form-{ index }" }}
 
-		{{ if success }}
+	{{# ERFOLG #}}
+	{{ if success }}
 
-			{{ success|wrap:strong }}
+		{{ success_txt ?? success|wrap:strong }}
 
-		{{ else }}
+	{{ else }}
 
-			<div class="m-form__fields">
+		{{ FELDER }}
+		<div class="m-form__content">
 
-				{{ fields }}
-					<div class="m-input__container{{ if width }} m-input__container--{{ width }}{{ /if }}">
-						
-						{{ HTML }}
-						{{ if type == 'html' }}
-						
-							{{ field:html }}
-						
-						{{ FIELDS }}
-						{{ else }}
-							
-							{{ if type == 'checkboxes' || type == 'radio' }}
-								<fieldset>
-									{{ display|wrap:legend.m-input__label }}
-							{{ else }}
-								<label class="m-input__label" for="{{ handle }}">{{ display }}</label>
-							{{ /if }}
-							
-							{{ instructions|markdown|wrap:div.m-input__instructions }}
-							
-							{{ field }}
+			{{ fields }}
+			<div class="m-form__field{{ if width }} m-form__field--{{ width }}{{ /if }}"{{ if type == 'hidden' or input_type == 'hidden' }} hidden{{ /if }}>
 
-							{{ if type == 'checkboxes' ||  type == 'radio' }}
-								</fieldset>
-							{{ /if }}
+				{{ if type == 'checkboxes' ||  type == 'radio' }}
+					<fieldset>
+						{{ display|wrap:legend.m-form__field-label }}
+				{{ elseif type != 'hidden' }}
+					<label class="m-form__field-label" for="{{ handle }}">{{ display }}</label>
+				{{ /if }}
+				
+				{{ instructions|markdown|wrap:div.m-form__field-instructions }}
+				
+				{{ if handle != 'digit_1' && handle != 'digit_2' && handle != 'sum' }}
+					{{ field }}
+				{{ elseif handle == 'sum' }}
+					<input id="{{ handle }}" name="{{ handle }}" type="number" required>
+				{{ else }}
+					<input id="{{ handle }}" name="{{ handle }}" type="hidden" value="{{ random_number }}">
+				{{ /if }}
 
-							{{ ERROR  }}
-							{{ if error }}
-								<p class="m-input__error">{{ error }}</p>
-							{{ /if }}
-							
-						{{ /if }}
-						
-					</div>
+				{{ if type == 'checkboxes' ||  type == 'radio' }}
+					</fieldset>
+				{{ /if }}
+				
+				{{ if error }}
+					<p class="m-form__message--error">{{ error }}</p>
+				{{ /if }}
 
-					{{ HONEYPOT  }}
-					{{ if index == 1 }}
-						<div class="m-input__container" data-hp>
-							<label class="m-input__label" for="{{ honeypot }}" data-hp>{{ honeypot|ucfirst }}</label>
-							<input class="m-input" id="{{ honeypot }}" type="text" name="{{ honeypot }}" data-hp>
-						</div>
-					{{ /if }}
-
-				{{ /fields }}
-
-				<div class="m-button__container">
-					<button class="m-button">Senden</button>
-				</div>
+			</div>
 			
+			{{ if index == 1 }}
+				<div class="m-form__field" data-hp>
+					<label class="m-form__field-text" data-hp>{{ honeypot|ucfirst }}</label>
+					<input type="text" name="{{ honeypot }}" data-hp>
+				</div>
+			{{ /if }}
+
+			{{ /fields }}
+			
+			<div class="m-form__field">
+				<button class="m-form__submit">Absenden</button>
 			</div>
 
-		{{ /if }}
+		</div>
 
-	{{ /form:create }}
-{{ /if }}
+	{{ /if }}
+
+{{ /form:create }}
